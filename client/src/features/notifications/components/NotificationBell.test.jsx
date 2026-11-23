@@ -8,7 +8,7 @@ vi.mock('../../auth/context/useAuth.js', () => ({
   useAuth: () => ({ user: { role: 'CUSTOMER' } }),
 }));
 
-vi.mock('../context/NotificationContext.jsx', () => ({
+vi.mock('../context/useNotifications.js', () => ({
   useNotificationsContext: () => ({
     unreadCount: 3,
     refreshUnreadCount: vi.fn(),

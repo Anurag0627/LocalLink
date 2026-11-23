@@ -193,6 +193,22 @@ These scripts do not drop their test databases.
 
 The frontend is served by Vite at `http://localhost:5173`; the API listens on port `5000` by default. The backend connects to MongoDB before it starts accepting HTTP requests. Install and start MongoDB locally, or set `MONGODB_URI` to a reachable MongoDB connection URI before starting the API.
 
+### Creating the first administrator
+
+Admin accounts cannot be created through public registration. To create a dedicated administrator account, run this from the repository root in PowerShell:
+
+```powershell
+$env:ADMIN_FIRST_NAME = Read-Host "First name"
+$env:ADMIN_LAST_NAME = Read-Host "Last name"
+$env:ADMIN_EMAIL = Read-Host "Email"
+$securePassword = Read-Host "Password (12+ characters)" -AsSecureString
+$env:ADMIN_PASSWORD = [System.Net.NetworkCredential]::new('', $securePassword).Password
+npm run create-admin --workspace @locallink/server
+Remove-Item Env:ADMIN_FIRST_NAME, Env:ADMIN_LAST_NAME, Env:ADMIN_EMAIL, Env:ADMIN_PASSWORD
+```
+
+The command uses the server's `MONGODB_URI` (or the local default), creates a new admin account, and refuses to modify an existing account. Then sign in at `http://localhost:5173/login`; the admin dashboard opens at `/admin`, and category management is at `/admin/categories`.
+
 ## Review APIs
 
 Phase 8 adds review creation, retrieval, customer management, reporting, provider ratings, and administrative moderation.
@@ -273,6 +289,40 @@ With MongoDB and the API running, request `GET http://localhost:5000/api/v1/heal
 ```
 
 `GET /api/health` remains available with the Phase 1 response fields for compatibility. Both health endpoints return HTTP 503 when MongoDB is disconnected.
+
+Additional deployment probes are available:
+
+- `GET /api/v1/health/live` — process liveness; does not require MongoDB.
+- `GET /api/v1/health/ready` — readiness; returns HTTP 503 until MongoDB is connected.
+
+## Production environment reference
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `NODE_ENV` | Yes in production | `development`, `test`, or `production` |
+| `PORT` | Optional | HTTP port; defaults to `5000` |
+| `CLIENT_URL` | Yes in production | Comma-separated allowed frontend origins |
+| `MONGODB_URI` | Yes in production | MongoDB connection URI; test URLs must end in `_test` |
+| `ACCESS_TOKEN_SECRET` | Yes in production | At least 64 varied characters for JWT signing |
+| `ACCESS_TOKEN_EXPIRES_IN` | Optional | Access-token duration such as `15m` |
+| `ACCESS_TOKEN_ISSUER` | Optional | JWT issuer |
+| `ACCESS_TOKEN_AUDIENCE` | Optional | JWT audience |
+| `REFRESH_TOKEN_TTL_DAYS` | Optional | Refresh-session lifetime; `1` to `365` |
+| `COOKIE_NAME` | Optional | HttpOnly refresh-cookie name |
+| `COOKIE_SECURE` | Yes in production | Must be `true` |
+| `COOKIE_SAME_SITE` | Optional | `strict`, `lax`, or `none`; `none` requires secure cookies |
+| `VITE_API_BASE_URL` | Yes at frontend build time | Full API URL including `/api/v1` |
+
+Example placeholders only:
+
+```dotenv
+NODE_ENV=production
+CLIENT_URL=https://app.example.com
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<database>
+ACCESS_TOKEN_SECRET=<long-random-secret>
+COOKIE_SECURE=true
+COOKIE_SAME_SITE=lax
+```
 
 ## Authentication API
 

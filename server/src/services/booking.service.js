@@ -201,6 +201,9 @@ export async function cancelCustomerBooking(user, bookingId, reason) {
         cancelledAt: new Date(),
         cancelledBy: 'CUSTOMER',
       },
+      $unset: {
+        schedulingKey: 1,
+      },
     },
   });
   if (!updated) throw new ApiError(409, 'Booking state changed concurrently');
@@ -300,6 +303,9 @@ export async function rejectBooking(user, bookingId, reason) {
         rejectionReason: reason,
         rejectedAt: new Date(),
       },
+      $unset: {
+        schedulingKey: 1,
+      },
     },
   });
   if (!updated) throw new ApiError(409, 'Booking state changed concurrently');
@@ -333,6 +339,9 @@ export async function cancelProviderBooking(user, bookingId, reason) {
         cancellationReason: reason,
         cancelledAt: new Date(),
         cancelledBy: 'PROVIDER',
+      },
+      $unset: {
+        schedulingKey: 1,
       },
     },
   });

@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { UserRound } from 'lucide-react';
 import { useAuth } from '../features/auth/context/useAuth.js';
 import NotificationBell from '../features/notifications/components/NotificationBell.jsx';
 
@@ -17,6 +18,15 @@ export default function RoleLayout({ role, title }) {
             {role === 'CUSTOMER' ? (
               <>
                 <NavLink to="/customer" end className={({ isActive }) => `text-sm font-semibold ${isActive ? 'text-indigo-700' : 'text-slate-600'}`}>Home</NavLink>
+                <NavLink
+                  to="/customer/profile"
+                  aria-label="Profile"
+                  title="Profile"
+                  className={({ isActive }) => `inline-flex items-center gap-1 text-sm font-semibold ${isActive ? 'text-indigo-700' : 'text-slate-600'}`}
+                >
+                  <UserRound size={16} />
+                  <span className="hidden sm:inline">Profile</span>
+                </NavLink>
                 <NavLink to="/customer/services" className={({ isActive }) => `hidden text-sm font-semibold sm:block ${isActive ? 'text-indigo-700' : 'text-slate-600'}`}>Explore</NavLink>
                 <NavLink to="/customer/bookings" className={({ isActive }) => `hidden text-sm font-semibold sm:block ${isActive ? 'text-indigo-700' : 'text-slate-600'}`}>My Bookings</NavLink>
                 <NavLink to="/customer/reviews" className={({ isActive }) => `hidden text-sm font-semibold sm:block ${isActive ? 'text-indigo-700' : 'text-slate-600'}`}>My Reviews</NavLink>

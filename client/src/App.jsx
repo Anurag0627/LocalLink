@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout.jsx';
 import RoleLayout from './layouts/RoleLayout.jsx';
@@ -7,9 +8,9 @@ import LoginPage from './pages/LoginPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import AccessDeniedPage from './pages/AccessDeniedPage.jsx';
-import RoleLandingPage from './pages/RoleLandingPage.jsx';
 import { ProtectedRoute, PublicRoute } from './routes/RouteGuards.jsx';
 import CustomerHomePage from './features/customer/pages/CustomerHomePage.jsx';
+import CustomerProfilePage from './features/customer/pages/CustomerProfilePage.jsx';
 import ServiceDiscoveryPage from './features/customer/pages/ServiceDiscoveryPage.jsx';
 import ServiceDetailsPage from './features/customer/pages/ServiceDetailsPage.jsx';
 import ProviderDetailsPage from './features/customer/pages/ProviderDetailsPage.jsx';
@@ -33,6 +34,19 @@ import EditReviewPage from './features/reviews/pages/EditReviewPage.jsx';
 import ProviderReviewsPage from './features/reviews/pages/ProviderReviewsPage.jsx';
 import NotificationsPage from './features/notifications/pages/NotificationsPage.jsx';
 import NotificationPreferencesPage from './features/notifications/pages/NotificationPreferencesPage.jsx';
+import AdminLayout from './features/admin/components/AdminLayout.jsx';
+import FullPageLoader from './components/common/FullPageLoader.jsx';
+
+const AdminDashboardPage = lazy(() => import('./features/admin/pages/AdminDashboardPage.jsx'));
+const AdminCustomersPage = lazy(() => import('./features/admin/pages/AdminCustomersPage.jsx'));
+const AdminProvidersPage = lazy(() => import('./features/admin/pages/AdminProvidersPage.jsx'));
+import {
+  AdminBookingsPage,
+  AdminCategoriesPage,
+  AdminReportsPage,
+  AdminReviewsPage,
+  AdminServicesPage,
+} from './features/admin/pages/AdminOperationsPage.jsx';
 
 function App() {
   return (
@@ -61,6 +75,7 @@ function App() {
       <Route element={<ProtectedRoute roles={['CUSTOMER']} />}>
         <Route element={<RoleLayout role="CUSTOMER" title="Customer" />}>
           <Route path="customer" element={<CustomerHomePage />} />
+          <Route path="customer/profile" element={<CustomerProfilePage />} />
           <Route path="customer/services" element={<ServiceDiscoveryPage />} />
           <Route path="customer/services/:serviceId" element={<ServiceDetailsPage />} />
           <Route path="customer/categories/:categoryId" element={<CategoryServicesPage />} />
@@ -89,8 +104,19 @@ function App() {
         </Route>
       </Route>
       <Route element={<ProtectedRoute roles={['ADMIN']} />}>
-        <Route element={<RoleLayout role="ADMIN" title="Admin" />}>
-          <Route path="admin" element={<RoleLandingPage role="ADMIN" />} />
+        <Route element={<AdminLayout />}>
+          <Route path="admin" element={<Suspense fallback={<FullPageLoader />}><AdminDashboardPage /></Suspense>} />
+          <Route path="admin/customers" element={<Suspense fallback={<FullPageLoader />}><AdminCustomersPage /></Suspense>} />
+          <Route path="admin/customers/:customerId" element={<Suspense fallback={<FullPageLoader />}><AdminCustomersPage /></Suspense>} />
+          <Route path="admin/providers" element={<Suspense fallback={<FullPageLoader />}><AdminProvidersPage /></Suspense>} />
+          <Route path="admin/providers/verification" element={<Suspense fallback={<FullPageLoader />}><AdminProvidersPage verificationOnly /></Suspense>} />
+          <Route path="admin/providers/:providerId" element={<Suspense fallback={<FullPageLoader />}><AdminProvidersPage /></Suspense>} />
+          <Route path="admin/categories" element={<AdminCategoriesPage />} />
+          <Route path="admin/services" element={<AdminServicesPage />} />
+          <Route path="admin/bookings" element={<AdminBookingsPage />} />
+          <Route path="admin/bookings/:bookingId" element={<AdminBookingsPage />} />
+          <Route path="admin/reviews" element={<AdminReviewsPage />} />
+          <Route path="admin/reports" element={<AdminReportsPage />} />
         </Route>
       </Route>
 

@@ -89,6 +89,21 @@ process.once('SIGTERM', () => {
   void shutdown('SIGTERM');
 });
 
+process.once('uncaughtException', (error) => {
+  logger.fatal({ errorName: error.name }, 'Uncaught exception');
+  process.exitCode = 1;
+  void shutdown('uncaughtException');
+});
+
+process.once('unhandledRejection', (reason) => {
+  logger.fatal(
+    { errorName: reason?.name ?? 'UnhandledRejection' },
+    'Unhandled promise rejection',
+  );
+  process.exitCode = 1;
+  void shutdown('unhandledRejection');
+});
+
 try {
   await startServer();
 } catch (error) {

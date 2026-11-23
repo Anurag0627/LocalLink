@@ -48,6 +48,9 @@ const providerProfileSchema = new Schema(
       default: 0,
     },
     isAvailable: { type: Boolean, default: true },
+    verificationReason: { type: String, trim: true, maxlength: 1000 },
+    verificationReviewedAt: { type: Date },
+    verificationReviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true, optimisticConcurrency: true },
 );

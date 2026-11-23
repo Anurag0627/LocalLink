@@ -33,7 +33,6 @@ const bookingSchema = new Schema(
       type: String,
       unique: true,
       sparse: true,
-      immutable: true,
     },
     scheduledDate: { type: Date, required: true },
     scheduledTime: {

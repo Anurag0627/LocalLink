@@ -57,6 +57,7 @@ function errorMiddleware(error, request, response, next) {
       statusCode,
       method: request.method,
       path: request.path,
+      requestId: request.requestId,
     },
     isOperational ? 'Request failed' : 'Unexpected request error',
   );

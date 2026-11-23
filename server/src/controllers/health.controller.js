@@ -53,3 +53,25 @@ export const getLegacyHealth = asyncHandler((_request, response) => {
     database: health.data.database,
   });
 });
+
+export const getLiveness = asyncHandler((_request, response) => {
+  return new ApiResponse(200, 'LocalLink process is live', {
+    status: 'live',
+  }).send(response);
+});
+
+export const getReadiness = asyncHandler((_request, response) => {
+  const databaseConnected = isDatabaseConnected();
+  if (!databaseConnected) {
+    return response.status(503).json({
+      success: false,
+      message: 'LocalLink API is not ready',
+      data: { status: 'unready', database: { status: 'disconnected' } },
+      errors: [],
+    });
+  }
+  return new ApiResponse(200, 'LocalLink API is ready', {
+    status: 'ready',
+    database: { status: 'connected' },
+  }).send(response);
+});

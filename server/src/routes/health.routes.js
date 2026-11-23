@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { getHealth, getLegacyHealth } from '../controllers/health.controller.js';
+import { getHealth, getLegacyHealth, getLiveness, getReadiness } from '../controllers/health.controller.js';
 
 const healthRoutes = Router();
 const legacyHealthRoutes = Router();
 
 healthRoutes.get('/', getHealth);
+healthRoutes.get('/live', getLiveness);
+healthRoutes.get('/ready', getReadiness);
 legacyHealthRoutes.get('/', getLegacyHealth);
 
 export { legacyHealthRoutes };

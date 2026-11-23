@@ -8,7 +8,7 @@ export const providerProfileSchema = z.object({
 });
 
 export const serviceSchema = z.object({
-  category: z.string().trim().min(1),
+  category: z.string().trim().min(1, 'Select a category.'),
   title: z.string().trim().min(3).max(160),
   description: z.string().trim().min(1).max(5000),
   pricingType: z.enum(['FIXED', 'HOURLY', 'STARTING_FROM', 'QUOTE']),

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Bell, CheckCheck } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/context/useAuth.js';
-import { useNotificationsContext } from '../context/NotificationContext.jsx';
+import { useNotificationsContext } from '../context/useNotifications.js';
 import {
   getNotifications,
   markNotificationAsRead,

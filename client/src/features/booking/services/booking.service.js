@@ -1,4 +1,7 @@
 import api from '../../../lib/api.js';
+import { getCustomerAddresses } from '../../customer/services/customer.service.js';
+
+export { getCustomerAddresses };
 
 export function createBooking(data) {
   return api.post('/bookings', data);
@@ -42,8 +45,4 @@ export function completeBooking(bookingId) {
 
 export function getProviderSchedule(params = {}) {
   return api.get('/provider/bookings/calendar', { params });
-}
-
-export function getCustomerAddresses() {
-  return api.get('/customers/addresses');
 }

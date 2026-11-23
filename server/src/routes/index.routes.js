@@ -12,6 +12,7 @@ import providerBookingRoutes from './providerBooking.routes.js';
 import reviewRoutes from './review.routes.js';
 import reviewModerationRoutes from './reviewModeration.routes.js';
 import notificationRoutes from './notification.routes.js';
+import adminRoutes from './admin.routes.js';
 
 const apiRoutes = Router();
 const legacyApiRoutes = Router();
@@ -28,6 +29,7 @@ apiRoutes.use('/bookings', bookingRoutes);
 apiRoutes.use('/provider/bookings', providerBookingRoutes);
 apiRoutes.use('/reviews', reviewRoutes);
 apiRoutes.use('/admin', reviewModerationRoutes);
+apiRoutes.use('/admin', adminRoutes);
 apiRoutes.use('/notifications', notificationRoutes);
 legacyApiRoutes.use('/health', legacyHealthRoutes);
 

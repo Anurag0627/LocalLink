@@ -16,6 +16,7 @@ function requestLogger(request, response, next) {
       {
         method: request.method,
         path,
+        requestId: request.requestId,
         statusCode,
         durationMs: Number(process.hrtime.bigint() - startedAt) / 1e6,
       },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getMyReviews, updateReview } from '../services/review.service.js';
+import { getMyReviews, getReviewById, updateReview } from '../services/review.service.js';
 import RatingInput from '../components/RatingInput.jsx';
 import { LoadingState, ErrorState } from '../../customer/components/StateViews.jsx';
 
@@ -15,10 +15,10 @@ export default function EditReviewPage() {
 
   useEffect(() => {
     let active = true;
-    getMyReviews({ page: 1, limit: 100, sortBy: 'newest' })
+    getReviewById(reviewId)
       .then((response) => {
         if (!active) return;
-        const review = (response.data.data || []).find((item) => item._id === reviewId);
+        const review = response.data?.data;
         if (!review) {
           setError({ status: 404, message: 'Review not found.' });
           return;
@@ -27,7 +27,21 @@ export default function EditReviewPage() {
         setComment(review.comment || '');
       })
       .catch((requestError) => {
-        if (active) setError(requestError);
+        if (!active) return;
+        getMyReviews({ page: 1, limit: 100, sortBy: 'newest' })
+          .then((response) => {
+            if (!active) return;
+            const review = (response.data.data || []).find((item) => item._id === reviewId);
+            if (!review) {
+              setError(requestError || { status: 404, message: 'Review not found.' });
+              return;
+            }
+            setRating(review.rating);
+            setComment(review.comment || '');
+          })
+          .catch((err) => {
+            if (active) setError(err || requestError);
+          });
       })
       .finally(() => {
         if (active) setLoading(false);

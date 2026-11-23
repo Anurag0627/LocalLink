@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
 import {
   getActiveCategories,
   getProviderProfile,
@@ -12,6 +11,7 @@ const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATUR
 export default function ServiceForm({ initialData, submitLabel, onSubmit, submittingText = 'Saving...' }) {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [verificationStatus, setVerificationStatus] = useState('');
   const [values, setValues] = useState({
     category: initialData?.category?._id || initialData?.category || '',
@@ -32,14 +32,22 @@ export default function ServiceForm({ initialData, submitLabel, onSubmit, submit
 
   useEffect(() => {
     let active = true;
-    Promise.all([getActiveCategories(), getProviderProfile()])
-      .then(([categoryResponse, profileResponse]) => {
-        if (!active) return;
-        setCategories(categoryResponse.data.data || []);
-        setVerificationStatus(profileResponse.data.data.profile?.verificationStatus || '');
+    getActiveCategories()
+      .then((response) => {
+        if (active) setCategories(response.data.data || []);
       })
       .catch((requestError) => {
-        if (active) setError(requestError);
+        if (active) setError((current) => current || requestError);
+      })
+      .finally(() => {
+        if (active) setCategoriesLoading(false);
+      });
+    getProviderProfile()
+      .then((response) => {
+        if (active) setVerificationStatus(response.data.data.profile?.verificationStatus || '');
+      })
+      .catch((requestError) => {
+        if (active) setError((current) => current || requestError);
       });
     return () => { active = false; };
   }, []);
@@ -104,12 +112,17 @@ export default function ServiceForm({ initialData, submitLabel, onSubmit, submit
           <input value={values.title} onChange={(event) => setField('title', event.target.value)} className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none" />
         </label>
         <label className="text-sm font-semibold text-slate-700">Category
-          <select value={values.category} onChange={(event) => setField('category', event.target.value)} className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none">
-            <option value="">Select category</option>
+          <select disabled={categoriesLoading || categories.length === 0} value={values.category} onChange={(event) => setField('category', event.target.value)} className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none disabled:bg-slate-100">
+            <option value="">{categoriesLoading ? 'Loading categories...' : 'Select category'}</option>
             {categories.map((category) => <option key={category._id} value={category._id}>{category.name}</option>)}
           </select>
         </label>
       </div>
+      {!categoriesLoading && categories.length === 0 && (
+        <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          No active categories are available. An administrator must create or activate a category before you can add a service.
+        </p>
+      )}
       <label className="block text-sm font-semibold text-slate-700">Description
         <textarea value={values.description} onChange={(event) => setField('description', event.target.value)} rows="5" className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none" />
       </label>
@@ -157,7 +170,7 @@ export default function ServiceForm({ initialData, submitLabel, onSubmit, submit
         </div>
       </fieldset>
       <div className="flex gap-3">
-        <button type="submit" disabled={submitting} className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white disabled:opacity-50">{submitting ? submittingText : submitLabel}</button>
+        <button type="submit" disabled={submitting || categoriesLoading || categories.length === 0} className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white disabled:opacity-50">{submitting ? submittingText : submitLabel}</button>
         <button type="button" onClick={() => navigate(-1)} className="rounded-xl border border-slate-200 px-5 py-3 font-semibold text-slate-700">Cancel</button>
       </div>
     </form>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '../features/auth/context/useAuth.js';
+import NotificationBell from '../features/notifications/components/NotificationBell.jsx';
 import { roleLandingPath } from '../utils/roleLanding.js';
 
 const navLinkClass = ({ isActive }) =>
@@ -60,6 +61,7 @@ function Navbar() {
           )}
           {isAuthenticated ? (
             <div className="flex items-center gap-3 border-t border-slate-100 pt-4 md:border-0 md:pt-0">
+              {['CUSTOMER', 'PROVIDER'].includes(user?.role) && <NotificationBell />}
               <NavLink to={roleLandingPath(user.role)} className="rounded-lg px-3 py-2 font-semibold text-slate-700">
                 {user.firstName}
               </NavLink>

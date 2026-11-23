@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCheck, RefreshCw, Trash2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../auth/context/useAuth.js';
-import { useNotificationsContext } from '../context/NotificationContext.jsx';
+import { useNotificationsContext } from '../context/useNotifications.js';
 import {
   deleteNotification,
   getNotifications,

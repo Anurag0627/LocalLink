@@ -24,6 +24,7 @@ coverage/
 .DS_Store
 Thumbs.db
 Desktop.ini
+.mongo_data/
 
 # Editor files
 .vscode/*

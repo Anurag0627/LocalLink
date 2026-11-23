@@ -55,8 +55,9 @@ export default function CreateBookingPage() {
       setError({ message: parsed.error.issues[0]?.message || 'Please complete the booking form.' });
       return;
     }
-    if (parsed.data.scheduledDate <= new Date().toISOString().slice(0, 10)) {
-      setError({ message: 'Appointment must be scheduled for a future date.' });
+    const appointmentDate = new Date(`${parsed.data.scheduledDate}T${parsed.data.scheduledTime}`);
+    if (Number.isNaN(appointmentDate.getTime()) || appointmentDate.getTime() <= Date.now()) {
+      setError({ message: 'Appointment must be scheduled for a future date and time.' });
       return;
     }
     setSubmitting(true);

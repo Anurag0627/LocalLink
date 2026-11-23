@@ -71,4 +71,42 @@ describe('ProtectedRoute', () => {
     );
     expect(screen.getByText('Access denied')).toBeInTheDocument();
   });
+
+  it('does not allow providers to access the customer profile route', () => {
+    useAuth.mockReturnValue({
+      isLoading: false,
+      isAuthenticated: true,
+      user: { role: 'PROVIDER' },
+    });
+    render(
+      <MemoryRouter initialEntries={['/customer/profile']}>
+        <Routes>
+          <Route element={<ProtectedRoute roles={['CUSTOMER']} />}>
+            <Route path="/customer/profile" element={<div>Customer profile</div>} />
+          </Route>
+          <Route path="/access-denied" element={<div>Access denied</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('Access denied')).toBeInTheDocument();
+  });
+
+  it('does not allow customers or providers to access admin routes', () => {
+    useAuth.mockReturnValue({
+      isLoading: false,
+      isAuthenticated: true,
+      user: { role: 'CUSTOMER' },
+    });
+    render(
+      <MemoryRouter initialEntries={['/admin']}>
+        <Routes>
+          <Route element={<ProtectedRoute roles={['ADMIN']} />}>
+            <Route path="/admin" element={<div>Admin page</div>} />
+          </Route>
+          <Route path="/access-denied" element={<div>Access denied</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('Access denied')).toBeInTheDocument();
+  });
 });

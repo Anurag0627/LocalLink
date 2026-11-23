@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/context/useAuth.js';
 import { getCategories, getServices } from '../services/customer.service.js';
 import CategoryCard from '../components/CategoryCard.jsx';
 import ServiceCard from '../components/ServiceCard.jsx';
@@ -8,6 +9,7 @@ import { EmptyState, ErrorState, LoadingState } from '../components/StateViews.j
 
 export default function CustomerHomePage() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
   const [search, setSearch] = useState('');
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
@@ -31,11 +33,13 @@ export default function CustomerHomePage() {
     return () => { active = false; };
   }, []);
 
+  const exploreServicesPath = isAuthenticated && user?.role === 'CUSTOMER' ? '/customer/services' : '/services';
+
   const submitSearch = (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     if (search.trim()) params.set('search', search.trim());
-    navigate(`/services${params.size ? `?${params}` : ''}`);
+    navigate(`${exploreServicesPath}${params.size ? `?${params}` : ''}`);
   };
 
   return (
@@ -63,7 +67,7 @@ export default function CustomerHomePage() {
       <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="flex items-end justify-between gap-4">
           <div><p className="font-semibold text-indigo-600">What can we help with?</p><h2 className="mt-2 text-3xl font-bold text-slate-900">Popular categories</h2></div>
-          <Link to="/customer/services" className="hidden items-center gap-2 font-semibold text-indigo-700 sm:inline-flex">Explore services <ArrowRight size={17} /></Link>
+          <Link to={exploreServicesPath} className="hidden items-center gap-2 font-semibold text-indigo-700 sm:inline-flex">Explore services <ArrowRight size={17} /></Link>
         </div>
         {loading && <div className="mt-8"><LoadingState /></div>}
         {!loading && error && <div className="mt-8"><ErrorState error={error} /></div>}

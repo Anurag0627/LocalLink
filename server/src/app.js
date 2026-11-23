@@ -7,12 +7,14 @@ import { env } from './config/env.js';
 import errorMiddleware from './middlewares/error.middleware.js';
 import notFound from './middlewares/notFound.middleware.js';
 import requestLogger from './middlewares/requestLogger.middleware.js';
+import requestId from './middlewares/requestId.middleware.js';
 import apiRoutes, { legacyApiRoutes } from './routes/index.routes.js';
 import ApiError from './utils/ApiError.js';
 
 const app = express();
 
 app.use(helmet());
+app.use(requestId);
 app.use(
   cors({
     credentials: true,

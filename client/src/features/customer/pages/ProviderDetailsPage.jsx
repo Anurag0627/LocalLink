@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, MapPin } from 'lucide-react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   getProviderById,
   getProviderReviews,
@@ -14,6 +14,7 @@ import Pagination from '../components/Pagination.jsx';
 
 export default function ProviderDetailsPage() {
   const { providerId } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
   const navigationProvider = location.state?.provider;
   const [provider, setProvider] = useState(navigationProvider || null);
@@ -89,7 +90,7 @@ export default function ProviderDetailsPage() {
 
   return (
     <section className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
-      <button type="button" onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-indigo-700"><ArrowLeft size={17} /> Back</button>
+      <button type="button" onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-indigo-700"><ArrowLeft size={17} /> Back</button>
       {loading && <div className="mt-6"><LoadingState label="Loading provider profile..." /></div>}
       {!loading && error && (
         <div className="mt-6">

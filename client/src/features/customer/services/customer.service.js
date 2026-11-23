@@ -1,7 +1,35 @@
 import api from '../../../lib/api.js';
 
+export function getCustomerProfile() {
+  return api.get('/customers/profile');
+}
+
+export function updateCustomerProfile(data) {
+  return api.patch('/customers/profile', data);
+}
+
+export function getCustomerAddresses() {
+  return api.get('/customers/addresses');
+}
+
+export function addCustomerAddress(data) {
+  return api.post('/customers/addresses', data);
+}
+
+export function updateCustomerAddress(addressId, data) {
+  return api.patch(`/customers/addresses/${addressId}`, data);
+}
+
+export function deleteCustomerAddress(addressId) {
+  return api.delete(`/customers/addresses/${addressId}`);
+}
+
+export function setCustomerDefaultAddress(addressId) {
+  return api.patch(`/customers/addresses/${addressId}/default`);
+}
+
 export function getCategories(params = {}) {
-  return api.get('/discovery/categories', { params });
+  return api.get('/categories', { params });
 }
 
 export function getCategoryById(categoryId) {

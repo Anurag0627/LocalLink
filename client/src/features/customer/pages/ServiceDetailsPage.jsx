@@ -56,7 +56,7 @@ export default function ServiceDetailsPage() {
 
   return (
     <section className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
-      <button type="button" onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-indigo-700"><ArrowLeft size={17} /> Back to results</button>
+      <button type="button" onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-indigo-700"><ArrowLeft size={17} /> Back to results</button>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
         <main>
           {service.images?.[0] && <img src={service.images[0]} alt="" className="mb-6 h-72 w-full rounded-3xl object-cover" />}

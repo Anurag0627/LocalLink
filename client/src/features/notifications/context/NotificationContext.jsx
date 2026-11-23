@@ -1,8 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../auth/context/useAuth.js';
 import { getUnreadNotificationCount } from '../services/notification.service.js';
-
-const NotificationContext = createContext(null);
+import { NotificationContext } from './NotificationContextState.js';
 
 export function NotificationProvider({ children }) {
   const { isAuthenticated, user } = useAuth();
@@ -50,8 +49,4 @@ export function NotificationProvider({ children }) {
   return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 }
 
-export function useNotificationsContext() {
-  const context = useContext(NotificationContext);
-  if (!context) throw new Error('useNotificationsContext must be used within NotificationProvider');
-  return context;
-}
+export default NotificationProvider;
