@@ -17,6 +17,7 @@ export default function ServiceForm({ initialData, submitLabel, onSubmit, submit
     category: initialData?.category?._id || initialData?.category || '',
     title: initialData?.title || '',
     description: initialData?.description || '',
+    imageUrls: initialData?.images?.join('\n') || '',
     pricingType: initialData?.pricingType || 'FIXED',
     price: initialData?.price ?? '',
     estimatedDuration: initialData?.estimatedDuration ?? '',
@@ -67,6 +68,7 @@ export default function ServiceForm({ initialData, submitLabel, onSubmit, submit
       category: parsed.data.category,
       title: parsed.data.title,
       description: parsed.data.description,
+      images: parsed.data.imageUrls.split(/\r?\n/).map((url) => url.trim()).filter(Boolean),
       pricingType: parsed.data.pricingType,
       serviceLocationType: parsed.data.serviceLocationType,
     };
@@ -126,6 +128,23 @@ export default function ServiceForm({ initialData, submitLabel, onSubmit, submit
       <label className="block text-sm font-semibold text-slate-700">Description
         <textarea value={values.description} onChange={(event) => setField('description', event.target.value)} rows="5" className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none" />
       </label>
+      <div>
+        <label htmlFor="service-image-urls" className="block text-sm font-semibold text-slate-700">
+          Service image URLs (one per line, optional)
+        </label>
+        <textarea
+          id="service-image-urls"
+          value={values.imageUrls}
+          onChange={(event) => setField('imageUrls', event.target.value)}
+          rows="3"
+          placeholder="https://example.com/service-photo.jpg"
+          aria-describedby="service-image-help"
+          className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none focus:border-indigo-500"
+        />
+        <p id="service-image-help" className="mt-1 text-xs text-slate-500">
+          Add up to 20 HTTP or HTTPS image URLs. The first image is shown on service cards.
+        </p>
+      </div>
       <div className="grid gap-5 md:grid-cols-3">
         <label className="text-sm font-semibold text-slate-700">Pricing type
           <select value={values.pricingType} onChange={(event) => setField('pricingType', event.target.value)} className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-3 outline-none">

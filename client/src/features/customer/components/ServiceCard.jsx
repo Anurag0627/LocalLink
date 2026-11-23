@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ArrowRight, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import RatingDisplay from './RatingDisplay.jsx';
@@ -17,15 +18,22 @@ const locationLabel = {
 };
 
 export default function ServiceCard({ service }) {
+  const imageUrl = service.images?.[0];
+  const [failedImageUrl, setFailedImageUrl] = useState('');
   const provider = service.provider;
   const providerId = provider?._id;
   return (
     <article className="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md">
-      {service.images?.[0] ? (
-        <img src={service.images[0]} alt="" className="mb-4 h-40 w-full rounded-xl object-cover" />
-      ) : (
-        <div className="mb-4 h-40 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50" />
-      )}
+      <div className="mb-4 h-40 overflow-hidden rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50">
+        {imageUrl && failedImageUrl !== imageUrl && (
+          <img
+            src={imageUrl}
+            alt={`${service.title} service`}
+            className="h-full w-full object-cover"
+            onError={() => setFailedImageUrl(imageUrl)}
+          />
+        )}
+      </div>
       <div className="mb-3 flex items-start justify-between gap-3">
         <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">{service.category?.name || 'Service'}</span>
         <RatingDisplay rating={service.averageRating} count={service.totalReviews} compact />
